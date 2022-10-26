@@ -96,7 +96,6 @@ class SingleProduct extends Component {
         <button>Add to cart</button>
         </div>
         `;
-
     const addCartButton = prodEl.querySelector("button");
     addCartButton.addEventListener("click", this.addToCart.bind(this));
   }
