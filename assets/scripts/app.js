@@ -36,7 +36,6 @@ class Component {
     return rootElement;
   }
 }
-
 class ShoppingCart extends Component {
   items = [];
 
@@ -56,7 +55,12 @@ class ShoppingCart extends Component {
   }
 
   constructor(renderHookId) {
-    super(renderHookId);
+    super(renderHookId, false);
+    this.completeOrder = () => {
+      console.log("Order completed");
+      console.log(this.items);
+    };
+    this.render();
   }
 
   addProduct(product) {
@@ -71,7 +75,8 @@ class ShoppingCart extends Component {
         <h2>Total: ${0}\$</h2>
         <button>Order!</button>
         `;
-    cartEl.className = "cart";
+    const completeOrderBtn = cartEl.querySelector("button");
+    completeOrderBtn.addEventListener("click", this.completeOrder);
     this.totalPrice = cartEl.querySelector("h2");
   }
 }
@@ -106,13 +111,16 @@ class SingleProduct extends Component {
 }
 
 class ProductList extends Component {
+  #products = [];
+
   constructor(renderHookId) {
-    super(renderHookId);
-    this.fetchProducts();
+    super(renderHookId, false);
+    this.render();
+    this.#fetchProducts();
   }
 
-  fetchProducts() {
-    this.products = [
+  #fetchProducts() {
+    this.#products = [
       new Product(
         "PS2",
         "https://upload.wikimedia.org/wikipedia/commons/1/1c/PS2-Versions.jpg",
@@ -130,7 +138,7 @@ class ProductList extends Component {
   }
 
   renderProducts() {
-    for (const prod of this.products) {
+    for (const prod of this.#products) {
       new SingleProduct(prod, "prod-list");
     }
   }
@@ -139,7 +147,7 @@ class ProductList extends Component {
     this.createRootElement("ul", "product-list", [
       new ElementAttribute("id", "prod-list"),
     ]);
-    if (this.products && this.products.length > 0) {
+    if (this.#products && this.#products.length > 0) {
       this.renderProducts();
     }
   }
