@@ -15,8 +15,11 @@ class ElementAttribute {
 }
 
 class Component {
-  constructor(renderHookId) {
+  constructor(renderHookId, shouldRender = true) {
     this.hookId = renderHookId;
+    if (shouldRender) {
+      this.render();
+    }
   }
 
   createRootElement(tag, cssClasses, attributes) {
@@ -75,8 +78,9 @@ class ShoppingCart extends Component {
 
 class SingleProduct extends Component {
   constructor(product, renderHookId) {
-    super(renderHookId);
+    super(renderHookId, false);
     this.product = product;
+    this.render();
   }
 
   addToCart() {
@@ -102,42 +106,53 @@ class SingleProduct extends Component {
 }
 
 class ProductList extends Component {
-  products = [
-    new Product(
-      "PS2",
-      "https://upload.wikimedia.org/wikipedia/commons/1/1c/PS2-Versions.jpg",
-      99.99,
-      "Best console ever"
-    ),
-    new Product(
-      "Xbox",
-      "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
-      95.99,
-      "Second best console ever"
-    ),
-  ];
-
   constructor(renderHookId) {
     super(renderHookId);
+    this.fetchProducts();
+  }
+
+  fetchProducts() {
+    this.products = [
+      new Product(
+        "PS2",
+        "https://upload.wikimedia.org/wikipedia/commons/1/1c/PS2-Versions.jpg",
+        99.99,
+        "Best console ever"
+      ),
+      new Product(
+        "Xbox",
+        "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
+        95.99,
+        "Second best console ever"
+      ),
+    ];
+    this.renderProducts();
+  }
+
+  renderProducts() {
+    for (const prod of this.products) {
+      new SingleProduct(prod, "prod-list");
+    }
   }
 
   render() {
     this.createRootElement("ul", "product-list", [
       new ElementAttribute("id", "prod-list"),
     ]);
-    for (const prod of this.products) {
-      const singleProduct = new SingleProduct(prod, "prod-list");
-      singleProduct.render();
+    if (this.products && this.products.length > 0) {
+      this.renderProducts();
     }
   }
 }
 
-class Shop {
+class Shop extends Component {
+  constructor() {
+    super();
+  }
+
   render() {
     this.cart = new ShoppingCart("app");
-    this.cart.render();
-    const productList = new ProductList("app");
-    productList.render();
+    new ProductList("app");
   }
 }
 
@@ -146,7 +161,6 @@ class App {
 
   static init() {
     const shop = new Shop();
-    shop.render();
     this.cart = shop.cart;
   }
   static addProductToCart(product) {
