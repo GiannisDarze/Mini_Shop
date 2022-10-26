@@ -1,9 +1,4 @@
 class Product {
-  /*title = "DEFAULT";
-  imageUrl;
-  price;
-  description;*/
-
   constructor(title, image, price, description) {
     this.title = title;
     this.imageUrl = image;
@@ -44,9 +39,9 @@ class ShoppingCart extends Component {
 
   set cartItems(value) {
     this.items = value;
-    this.totalPrice.innerHTML = `<h2>Total: \$${this.totalAmount.toFixed(
+    this.totalPrice.innerHTML = `<h2>Total: ${this.totalAmount.toFixed(
       2
-    )}</h2>`;
+    )}\$</h2>`;
   }
 
   get totalAmount() {
@@ -70,8 +65,8 @@ class ShoppingCart extends Component {
   render() {
     const cartEl = this.createRootElement("section", "cart");
     cartEl.innerHTML = `
-        <h2>Total: \$${0}</h2>
-        <button>Complete</button>
+        <h2>Total: ${0}\$</h2>
+        <button>Order!</button>
         `;
     cartEl.className = "cart";
     this.totalPrice = cartEl.querySelector("h2");
@@ -96,7 +91,7 @@ class SingleProduct extends Component {
         </div>
         <div class="product-item__content">
         <h2>${this.product.title}</h2>
-        <h3>\$${this.product.price}</h3>
+        <h3>${this.product.price}\$</h3>
         <p>${this.product.description}</p>
         <button>Add to cart</button>
         </div>
